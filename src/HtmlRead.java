@@ -6,7 +6,7 @@ import java.net.URL;
 public class HtmlRead {
 
     public static void main(String[] args) {
-        HtmlRead html = new HtmlRead();
+        HtmlRead htmlRead = new HtmlRead();
     }
 
     public HtmlRead() {
@@ -19,20 +19,18 @@ public class HtmlRead {
             );
             String line;
             while ( (line = reader.readLine()) != null ) {
-//                if (line.contains("<!--")) {break;}
-                if((line.contains("http") || line.contains("www.")) && line.contains("//")) {
-                    int linkStart = line.contains("http") ?  line.indexOf("http") : line.indexOf("www");
-                    String choppedLinkStart = line.substring(linkStart);
+                if(line.contains("href")) {
+                    int indexHttp = line.indexOf("href") + 6;
+                    String newLine = line.substring(indexHttp);
 
-                    int linkEnd = choppedLinkStart.contains("'") ? line.indexOf("'", linkStart) : line.indexOf('"', linkStart);
+                    int end = newLine.indexOf("\"");
+                    int oEnd = newLine.indexOf("'");
 
-                    if(linkEnd == -1) {
-                        linkEnd = choppedLinkStart.contains(")") ? line.indexOf(")", linkStart) : line.indexOf(" ", linkStart);
+                    if (oEnd > end) {
+                        System.out.println(newLine.substring(0,oEnd));
+                    } else {
+                        System.out.println(newLine.substring(0,end));
                     }
-
-                    if (linkEnd == -1) {continue;}
-
-                    System.out.println(line.substring(linkStart, linkEnd));
                 }
             }
             reader.close();
