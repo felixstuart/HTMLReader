@@ -44,11 +44,6 @@ public class HtmlRead {
         c.gridy = 0;
         urlBarLayout.add(urlField, c);
 
-        JButton goButton = new JButton("Go");
-        c.weightx = 0;
-        c.gridx = 1;
-        c.gridy = 0;
-        urlBarLayout.add(goButton, c);
 
         JTextField searchField = new JTextField();
         searchField.createToolTip();
@@ -58,12 +53,25 @@ public class HtmlRead {
         c.weightx = 0.5;
         urlBarLayout.add(searchField, c);
 
+        JButton goButton = new JButton("Go");
+
+        goButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getLinks(urlField.getText(), searchField.getText());
+            }
+        });
+        c.weightx = 0;
+        c.gridx = 1;
+        c.gridy = 0;
+        urlBarLayout.add(goButton, c);
+
         mainFrame.add(urlBarLayout, BorderLayout.NORTH);
 
     }
 
 
-    private void getLinks(String location) {
+    private void getLinks(String location, String term) {
         try {
             System.out.println();
             System.out.println(location);
@@ -80,11 +88,14 @@ public class HtmlRead {
                     int end = newLine.indexOf("\"");
                     int oEnd = newLine.indexOf("'");
 
+                    String link;
                     if (oEnd > end) {
-                        System.out.println(newLine.substring(0, oEnd));
+                        link = newLine.substring(0, oEnd);
                     } else {
-                        System.out.println(newLine.substring(0, end));
-
+                        link = newLine.substring(0, end);
+                    }
+                    if(link.contains(term)) {
+                        System.out.println(link);
                     }
                 }
             }
@@ -94,25 +105,9 @@ public class HtmlRead {
         }
     }
 
+
     private void show() {
         mainFrame.setVisible(true);
-    }
-
-
-    private class GoButtonListener implements ActionListener {
-        private JTextArea urlField;
-        private JTextArea searchField;
-
-        public GoButtonListener(JTextArea url, JTextArea searchBar) {
-            urlField = url;
-            searchField = searchBar;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("button clicked");
-            getLinks(urlField.getText());
-        }
     }
 
 }
