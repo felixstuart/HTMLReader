@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.awt.*;
+import java.util.Objects;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 
 public class HtmlRead {
@@ -17,7 +15,6 @@ public class HtmlRead {
 
     public HtmlRead() {
         prepareGUI();
-//        getLinks("https://www.milton.edu");
     }
 
     public static void main(String[] args) {
@@ -29,6 +26,9 @@ public class HtmlRead {
         mainFrame = new JFrame();
         mainFrame.setSize(WIDTH, HEIGHT);
         mainFrame.setLayout(new BorderLayout());
+
+
+        JTextArea linkDisplay = new JTextArea();
 
         JPanel urlBarLayout = new JPanel();
         urlBarLayout.setLayout(new GridBagLayout());
@@ -58,27 +58,27 @@ public class HtmlRead {
         goButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getLinks(urlField.getText(), searchField.getText());
+                getLinks(urlField.getText(), searchField.getText(), linkDisplay);
             }
         });
+
         c.weightx = 0;
         c.gridx = 1;
         c.gridy = 0;
         urlBarLayout.add(goButton, c);
 
         mainFrame.add(urlBarLayout, BorderLayout.NORTH);
-
+        JScrollPane linkDisplayScrollable = new JScrollPane(linkDisplay);
+        mainFrame.add(linkDisplayScrollable, BorderLayout.CENTER);
     }
 
-
-    private void getLinks(String location, String term) {
+    private void getLinks(String location, String term, JTextArea linkDisplay) {
+        linkDisplay.setText("");
         try {
             System.out.println();
             System.out.println(location);
             URL url = new URL(location);
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(url.openStream())
-            );
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.contains("href")) {
@@ -94,8 +94,9 @@ public class HtmlRead {
                     } else {
                         link = newLine.substring(0, end);
                     }
-                    if(link.contains(term)) {
+                    if (link.contains(term)) {
                         System.out.println(link);
+                        linkDisplay.setText(linkDisplay.getText() + (Objects.equals(linkDisplay.getText(), "") ? "" : "\n") + link);
                     }
                 }
             }
@@ -104,7 +105,6 @@ public class HtmlRead {
             System.out.println(ex);
         }
     }
-
 
     private void show() {
         mainFrame.setVisible(true);
