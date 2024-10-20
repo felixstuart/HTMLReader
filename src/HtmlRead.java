@@ -37,6 +37,8 @@ public class HtmlRead {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         JTextField urlField = new JTextField();
+        urlField.createToolTip();
+        urlField.setToolTipText("Enter a URL");
         c.weightx = 0.5;
         c.gridx = 0;
         c.gridy = 0;
@@ -49,11 +51,12 @@ public class HtmlRead {
         urlBarLayout.add(goButton, c);
 
         JTextField searchField = new JTextField();
+        searchField.createToolTip();
+        searchField.setToolTipText("Enter a Search Term");
         c.gridx = 0;
         c.gridy = 1;
         c.weightx = 0.5;
         urlBarLayout.add(searchField, c);
-
 
 
         mainFrame.add(urlBarLayout, BorderLayout.NORTH);
