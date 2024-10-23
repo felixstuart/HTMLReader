@@ -36,7 +36,7 @@ public class HtmlRead {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        JTextField urlField = new JTextField("https://milton.edu");
+        JTextField urlField = new JTextField("https://derbyacademy.org");
         urlField.createToolTip();
         urlField.setToolTipText("Enter a URL");
         c.weightx = 0.5;
@@ -89,15 +89,25 @@ public class HtmlRead {
                     int oEnd = newLine.indexOf("'");
 
                     String link;
-                    if (oEnd > end) {
-                        link = newLine.substring(0, oEnd);
+                    System.out.println();
+                    System.out.println(end);
+                    System.out.println(oEnd);
+
+                    if (end == -1 || oEnd == -1) {
+                        if (oEnd > end) {
+                            link = newLine.substring(0, oEnd);
+                        } else {
+                            link = newLine.substring(0, end);
+                        }
                     } else {
-                        link = newLine.substring(0, end);
+                        int linkEnd = Math.min(end, oEnd);
+                        link = newLine.substring(0,linkEnd);
                     }
+
                     if (link.contains(term)) {
-                        System.out.println(link);
                         linkDisplay.setText(linkDisplay.getText() + (Objects.equals(linkDisplay.getText(), "") ? "" : "\n") + link);
                     }
+
                 }
             }
             reader.close();
