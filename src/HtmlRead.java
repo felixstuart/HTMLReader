@@ -75,8 +75,6 @@ public class HtmlRead {
     private void getLinks(String location, String term, JTextArea linkDisplay) {
         linkDisplay.setText("");
         try {
-            System.out.println();
-            System.out.println(location);
             URL url = new URL(location);
             BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
             String line;
@@ -89,10 +87,6 @@ public class HtmlRead {
                     int oEnd = newLine.indexOf("'");
 
                     String link;
-                    System.out.println();
-                    System.out.println(end);
-                    System.out.println(oEnd);
-
                     if (end == -1 || oEnd == -1) {
                         if (oEnd > end) {
                             link = newLine.substring(0, oEnd);
@@ -101,18 +95,26 @@ public class HtmlRead {
                         }
                     } else {
                         int linkEnd = Math.min(end, oEnd);
-                        link = newLine.substring(0,linkEnd);
+                        link = newLine.substring(0, linkEnd);
+                    }
+
+//                    add the full url back to relative links
+                    if (link.startsWith("/")) {
+                        link = location + link;
+                    }
+                    if (link.startsWith("#")) {
+                        link = location + "/" + link;
                     }
 
                     if (link.contains(term)) {
                         linkDisplay.setText(linkDisplay.getText() + (Objects.equals(linkDisplay.getText(), "") ? "" : "\n") + link);
                     }
-
                 }
             }
             reader.close();
         } catch (Exception ex) {
             System.out.println(ex);
+            linkDisplay.setText("Oh No!" + "\n" + ex);
         }
     }
 
