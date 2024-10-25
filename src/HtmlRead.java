@@ -80,42 +80,71 @@ public class HtmlRead {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.contains("href")) {
-                    int indexHttp = line.indexOf("href") + 6;
-                    String newLine = line.substring(indexHttp);
-
-                    int end = newLine.indexOf("\"");
-                    int oEnd = newLine.indexOf("'");
-
-                    String link;
-                    if (end == -1 || oEnd == -1) {
-                        if (oEnd > end) {
-                            link = newLine.substring(0, oEnd);
-                        } else {
-                            link = newLine.substring(0, end);
+                    for (int i = 0; i <= getLinkCount(line); i++) {
+                        String link = getRawLink(line);
+                        line = line.substring(line.indexOf(link));
+                        link = optionalFixRelativeLinks(location,link);
+                        if (link.contains(term)) {
+                            linkDisplay.setText(linkDisplay.getText() + (Objects.equals(linkDisplay.getText(), "") ? "" : "\n") + link);
                         }
-                    } else {
-                        int linkEnd = Math.min(end, oEnd);
-                        link = newLine.substring(0, linkEnd);
-                    }
-
-//                    add the full url back to relative links
-                    if (link.startsWith("/")) {
-                        link = location + link;
-                    }
-                    if (link.startsWith("#")) {
-                        link = location + "/" + link;
-                    }
-
-                    if (link.contains(term)) {
-                        linkDisplay.setText(linkDisplay.getText() + (Objects.equals(linkDisplay.getText(), "") ? "" : "\n") + link);
                     }
                 }
             }
             reader.close();
+            if (Objects.equals(linkDisplay.getText(), "")) {
+                linkDisplay.setText("No Links Found with \"" + term + "\". Try a different search term, or a different URL.");
+            }
         } catch (Exception ex) {
             System.out.println(ex);
             linkDisplay.setText("Oh No!" + "\n" + ex);
         }
+    }
+
+    private static String getRawLink(String line) {
+        int indexHttp = line.indexOf("href") + 6;
+        String newLine = line.substring(indexHttp);
+
+        int end = newLine.indexOf("\"");
+        int oEnd = newLine.indexOf("'");
+
+        String link;
+        if (end == -1 || oEnd == -1) {
+            if (oEnd > end) {
+                link = newLine.substring(0, oEnd);
+            } else {
+                link = newLine.substring(0, end);
+            }
+        } else {
+            int linkEnd = Math.min(end, oEnd);
+            link = newLine.substring(0, linkEnd);
+        }
+
+        return link;
+    }
+
+    private static String optionalFixRelativeLinks(String location, String link) {
+        //                    add the full url back to relative links
+        if (link.startsWith("/")) {
+            link = location + link;
+        }
+        if (link.startsWith("#")) {
+            link = location + "/" + link;
+        }
+        return link;
+    }
+    private static int getLinkCount(String line) {
+//        from stackoverflow (answer 2): https://stackoverflow.com/questions/767759/find-the-number-of-occurrences-of-a-substring-in-a-string
+        //        count the number of links in the line
+        int index = 0;
+        int count = 0;
+        while(index != -1) {
+            index = line.indexOf("href", index);
+            if (index != -1) {
+                count++;
+                index += 4;
+            }
+        }
+        return count;
     }
 
     private void show() {
