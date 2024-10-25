@@ -36,7 +36,7 @@ public class HtmlRead {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        JTextField urlField = new JTextField("https://derbyacademy.org");
+        JTextField urlField = new JTextField("https://www.milton.edu");
         urlField.createToolTip();
         urlField.setToolTipText("Enter a URL");
         c.weightx = 0.5;
