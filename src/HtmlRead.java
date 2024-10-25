@@ -83,7 +83,7 @@ public class HtmlRead {
                     for (int i = 0; i <= getLinkCount(line); i++) {
                         String link = getRawLink(line);
                         line = line.substring(line.indexOf(link));
-                        link = optionalFixRelativeLinks(location,link);
+                        link = optionalFixRelativeLinks(location, link);
                         if (link.contains(term)) {
                             linkDisplay.setText(linkDisplay.getText() + (Objects.equals(linkDisplay.getText(), "") ? "" : "\n") + link);
                         }
@@ -132,12 +132,13 @@ public class HtmlRead {
         }
         return link;
     }
+
     private static int getLinkCount(String line) {
 //        from stackoverflow (answer 2): https://stackoverflow.com/questions/767759/find-the-number-of-occurrences-of-a-substring-in-a-string
         //        count the number of links in the line
         int index = 0;
         int count = 0;
-        while(index != -1) {
+        while (index != -1) {
             index = line.indexOf("href", index);
             if (index != -1) {
                 count++;
