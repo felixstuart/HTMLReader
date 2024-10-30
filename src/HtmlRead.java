@@ -13,6 +13,7 @@ public class HtmlRead {
     private int WIDTH = 1000;
     private int HEIGHT = 700;
 
+    private int linkCount = 0;
     public HtmlRead() {
         prepareGUI();
     }
@@ -25,8 +26,51 @@ public class HtmlRead {
     private void prepareGUI() {
         mainFrame = new JFrame();
         mainFrame.setSize(WIDTH, HEIGHT);
-        mainFrame.setLayout(new BorderLayout());
 
+        JTabbedPane mainPanel = new JTabbedPane();
+
+        JMenu file = new JMenu("File");
+        JMenuBar mb = new JMenuBar();
+
+        JMenuItem newTab = new JMenuItem("New Tab");
+        newTab.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount()+1), makeTabUI(mainPanel));
+            }
+        });
+
+        JMenuItem closeThisTab = new JMenuItem("Close This Tab");
+        closeThisTab.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainPanel.removeTabAt(mainPanel.getSelectedIndex());
+            }
+        });
+
+        file.add(newTab);
+        file.add(closeThisTab);
+        mb.add(file);
+        mainFrame.setJMenuBar(mb);
+
+
+//        JButton newTab = new JButton("New Tab");
+//        newTab.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount()), makeTabUI(mainPanel));
+//            }
+//        });
+
+        mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount()+1), makeTabUI(mainPanel));
+
+        mainFrame.add(mainPanel);
+    }
+
+
+    private JPanel makeTabUI(JTabbedPane parent) {
+        JPanel defaultPage = new JPanel();
+        defaultPage.setLayout(new BorderLayout());
 
         JTextArea linkDisplay = new JTextArea();
 
@@ -58,7 +102,7 @@ public class HtmlRead {
         goButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getLinks(urlField.getText(), searchField.getText(), linkDisplay);
+                getLinks(urlField.getText(), searchField.getText(), linkDisplay, parent);
             }
         });
 
@@ -67,12 +111,27 @@ public class HtmlRead {
         c.gridy = 0;
         urlBarLayout.add(goButton, c);
 
-        mainFrame.add(urlBarLayout, BorderLayout.NORTH);
+        JButton newTabButton = new JButton("New Tab");
+
+        newTabButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.addTab(String.format("Tab %x", parent.getTabCount()+1), makeTabUI(parent));
+            }
+        });
+
+        c.weightx = 0;
+        c.gridx = 1;
+        c.gridy = 1;
+        urlBarLayout.add(newTabButton, c);
+
+        defaultPage.add(urlBarLayout, BorderLayout.NORTH);
         JScrollPane linkDisplayScrollable = new JScrollPane(linkDisplay);
-        mainFrame.add(linkDisplayScrollable, BorderLayout.CENTER);
+        defaultPage.add(linkDisplayScrollable, BorderLayout.CENTER);
+        return defaultPage;
     }
 
-    private void getLinks(String location, String term, JTextArea linkDisplay) {
+    private void getLinks(String location, String term, JTextArea linkDisplay, JTabbedPane parent) {
         linkDisplay.setText("");
         try {
             URL url = new URL(location);
@@ -80,6 +139,7 @@ public class HtmlRead {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.contains("href")) {
+                    linkCount++;
                     for (int i = 0; i <= getLinkCount(line); i++) {
                         String link = getRawLink(line);
                         line = line.substring(line.indexOf(link));
