@@ -14,6 +14,7 @@ public class HtmlRead {
     private int HEIGHT = 700;
 
     private int linkCount = 0;
+
     public HtmlRead() {
         prepareGUI();
     }
@@ -36,7 +37,7 @@ public class HtmlRead {
         newTab.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount()+1), makeTabUI(mainPanel));
+                mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount() + 1), makeTabUI(mainPanel));
             }
         });
 
@@ -53,16 +54,7 @@ public class HtmlRead {
         mb.add(file);
         mainFrame.setJMenuBar(mb);
 
-
-//        JButton newTab = new JButton("New Tab");
-//        newTab.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount()), makeTabUI(mainPanel));
-//            }
-//        });
-
-        mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount()+1), makeTabUI(mainPanel));
+        mainPanel.addTab(String.format("Tab %x", mainPanel.getTabCount() + 1), makeTabUI(mainPanel));
 
         mainFrame.add(mainPanel);
     }
@@ -110,20 +102,6 @@ public class HtmlRead {
         c.gridx = 1;
         c.gridy = 0;
         urlBarLayout.add(goButton, c);
-
-        JButton newTabButton = new JButton("New Tab");
-
-        newTabButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                parent.addTab(String.format("Tab %x", parent.getTabCount()+1), makeTabUI(parent));
-            }
-        });
-
-        c.weightx = 0;
-        c.gridx = 1;
-        c.gridy = 1;
-        urlBarLayout.add(newTabButton, c);
 
         defaultPage.add(urlBarLayout, BorderLayout.NORTH);
         JScrollPane linkDisplayScrollable = new JScrollPane(linkDisplay);
